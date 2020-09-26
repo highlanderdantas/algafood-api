@@ -50,8 +50,8 @@ public class RestauranteProdutosController {
 		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 		
 		List<Produto> todosProdutos = incluirInativos 
-			    ? produtoRepository.findAllByRestaurante(restaurante)
-				: produtoRepository.findByAtivosRestaurante(restaurante);
+			    ? produtoRepository.findTodosByRestaurante(restaurante)
+				: produtoRepository.findAtivosByRestaurante(restaurante);
 		
 		return produtoModelAssembler.toCollectionModel(todosProdutos);
 	}
