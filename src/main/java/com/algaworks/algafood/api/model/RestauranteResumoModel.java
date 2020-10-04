@@ -1,12 +1,21 @@
 package com.algaworks.algafood.api.model;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class RestauranteResumoModel {
+@Relation(collectionRelation = "restaurantes")
+public class RestauranteResumoModel extends RepresentationModel<RestauranteResumoModel>{
 
-    private Long id;
-    private String nome;   
-} 
+	@ApiModelProperty(example = "1")
+	private Long id;
+	
+	@ApiModelProperty(example = "Thai Gourmet")
+	private String nome;
+	
+}
