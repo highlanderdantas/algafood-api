@@ -1,5 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
+import static com.algaworks.algafood.api.helper.AlgaLinks.linkToEstatisticasVendasDiarias;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.openapi.controller.EstatisticasControllerOpenApi;
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
+import com.algaworks.algafood.domain.model.EstatisticasModel;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
 import com.algaworks.algafood.domain.service.VendaQueryService;
 import com.algaworks.algafood.domain.service.VendaReportService;
@@ -26,6 +29,16 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
 	
 	@Autowired
 	private VendaReportService vendaReportService;
+	
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public EstatisticasModel estatisticas() {
+	    var estatisticasModel = new EstatisticasModel();
+	    
+	    estatisticasModel.add(linkToEstatisticasVendasDiarias("vendas-diarias"));
+	    
+	    return estatisticasModel;
+	} 
 	
 	@Override
 	@GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)

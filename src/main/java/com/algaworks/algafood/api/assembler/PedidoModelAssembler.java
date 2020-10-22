@@ -1,11 +1,6 @@
 package com.algaworks.algafood.api.assembler;
 
-import static com.algaworks.algafood.api.helper.AlgaLinks.linkToCidade;
-import static com.algaworks.algafood.api.helper.AlgaLinks.linkToFormaPagamento;
-import static com.algaworks.algafood.api.helper.AlgaLinks.linkToPedidos;
-import static com.algaworks.algafood.api.helper.AlgaLinks.linkToProduto;
-import static com.algaworks.algafood.api.helper.AlgaLinks.linkToRestaurante;
-import static com.algaworks.algafood.api.helper.AlgaLinks.linkToUsuario;
+import static com.algaworks.algafood.api.helper.AlgaLinks.*;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +29,19 @@ public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pe
         var restauranteId = pedidoModel.getRestaurante().getId();
         
         
-		pedidoModel.add(linkToPedidos());
+		pedidoModel.add(linkToPedidos("pedidos"));
+		
+		if (pedido.podeSerConfirmado()) {
+			pedidoModel.add(linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+		}
+		
+		if (pedido.podeSerCancelado()) {
+			pedidoModel.add(linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));
+		}
+		
+		if (pedido.podeSerEntregue()) {
+			pedidoModel.add(linkToEntregaPedido(pedido.getCodigo(), "entregar"));
+		}
         
 		pedidoModel.getRestaurante().add(
 	            linkToRestaurante(restauranteId));

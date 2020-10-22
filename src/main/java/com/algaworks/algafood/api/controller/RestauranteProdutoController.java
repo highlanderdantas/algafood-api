@@ -1,10 +1,13 @@
 package com.algaworks.algafood.api.controller;
 
+import static com.algaworks.algafood.api.helper.AlgaLinks.linkToProdutos;
+
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,19 +53,20 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 	
 	@Override
 	@GetMapping
-	public List<ProdutoModel> listar(@PathVariable Long restauranteId,
-			@RequestParam(required = false) boolean incluirInativos) {
-		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
-		
-		List<Produto> todosProdutos = null;
-		
-		if (incluirInativos) {
-			todosProdutos = produtoRepository.findTodosByRestaurante(restaurante);
-		} else {
-			todosProdutos = produtoRepository.findAtivosByRestaurante(restaurante);
-		}
-		
-		return produtoModelAssembler.toCollectionModel(todosProdutos);
+	public CollectionModel<ProdutoModel> listar(@PathVariable Long restauranteId,
+	        @RequestParam(required = false, defaultValue = "false") Boolean incluirInativos) {
+	    Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
+	    
+	    List<Produto> todosProdutos = null;
+	    
+	    if (incluirInativos) {
+	        todosProdutos = produtoRepository.findTodosByRestaurante(restaurante);
+	    } else {
+	        todosProdutos = produtoRepository.findAtivosByRestaurante(restaurante);
+	    }
+	    
+	    return produtoModelAssembler.toCollectionModel(todosProdutos)
+	            .add(linkToProdutos(restauranteId));
 	}
 	
 	@Override

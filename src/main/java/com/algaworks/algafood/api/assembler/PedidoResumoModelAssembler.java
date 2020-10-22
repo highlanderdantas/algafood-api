@@ -30,7 +30,7 @@ public class PedidoResumoModelAssembler
     	
         modelMapper.map(pedido, pedidoResumoModel);
         
-        pedidoResumoModel.add(linkToPedidos());
+        pedidoResumoModel.add(linkToPedidos("pedidos"));
         
         pedidoResumoModel.getRestaurante().add(
                 linkToRestaurante(pedido.getRestaurante().getId()));
