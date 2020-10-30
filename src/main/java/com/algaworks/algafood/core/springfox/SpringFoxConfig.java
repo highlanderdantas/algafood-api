@@ -23,28 +23,28 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.algaworks.algafood.api.exceptionhandler.Problem;
-import com.algaworks.algafood.api.model.CidadeModel;
-import com.algaworks.algafood.api.model.CozinhaModel;
-import com.algaworks.algafood.api.model.EstadoModel;
-import com.algaworks.algafood.api.model.FormaPagamentoModel;
-import com.algaworks.algafood.api.model.GrupoModel;
-import com.algaworks.algafood.api.model.PedidoResumoModel;
-import com.algaworks.algafood.api.model.PermissaoModel;
-import com.algaworks.algafood.api.model.ProdutoModel;
-import com.algaworks.algafood.api.model.RestauranteBasicoModel;
-import com.algaworks.algafood.api.model.UsuarioModel;
-import com.algaworks.algafood.api.openapi.model.CidadesModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.CozinhasModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.EstadosModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.FormasPagamentoModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.GruposModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.LinksModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.PedidosResumoModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.PermissoesModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.ProdutosModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.RestaurantesBasicoModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.UsuariosModelOpenApi;
+import com.algaworks.algafood.api.v1.model.CidadeModel;
+import com.algaworks.algafood.api.v1.model.CozinhaModel;
+import com.algaworks.algafood.api.v1.model.EstadoModel;
+import com.algaworks.algafood.api.v1.model.FormaPagamentoModel;
+import com.algaworks.algafood.api.v1.model.GrupoModel;
+import com.algaworks.algafood.api.v1.model.PedidoResumoModel;
+import com.algaworks.algafood.api.v1.model.PermissaoModel;
+import com.algaworks.algafood.api.v1.model.ProdutoModel;
+import com.algaworks.algafood.api.v1.model.RestauranteBasicoModel;
+import com.algaworks.algafood.api.v1.model.UsuarioModel;
+import com.algaworks.algafood.api.v1.openapi.model.CidadesModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.CozinhasModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.EstadosModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.FormasPagamentoModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.GruposModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.LinksModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.PageableModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.PedidosResumoModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.PermissoesModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.ProdutosModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.RestaurantesBasicoModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.UsuariosModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
@@ -68,13 +68,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SpringFoxConfig implements WebMvcConfigurer {
 
 	@Bean
-	public Docket apiDocket() {
+	public Docket apiDocketV1() {
 		var typeResolver = new TypeResolver();
 		
 		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("V1")
 				.select()
 					.apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
-					.paths(PathSelectors.any())
+					.paths(PathSelectors.ant("/v1/**"))
 					.build()
 				.useDefaultResponseMessages(false)
 				.globalResponseMessage(RequestMethod.GET, globalGetResponseMessages())
@@ -128,7 +129,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 						typeResolver.resolve(CollectionModel.class, UsuarioModel.class),
 						UsuariosModelOpenApi.class))
 				
-				.apiInfo(apiInfo())
+				.apiInfo(apiInfoV1())
 				.tags(new Tag("Cidades", "Gerencia as cidades"),
 						new Tag("Grupos", "Gerencia os grupos de usuários"),
 						new Tag("Cozinhas", "Gerencia as cozinhas"),
@@ -195,10 +196,10 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 			);
 	}
 	
-	private ApiInfo apiInfo() {
+	private ApiInfo apiInfoV1() {
 		return new ApiInfoBuilder()
 				.title("AlgaFood API")
-				.description("API aberta para clientes e restaurantes")
+				.description("API aberta para clientes e restaurantes.")
 				.version("1")
 				.contact(new Contact("AlgaWorks", "https://www.algaworks.com", "contato@algaworks.com"))
 				.build();
