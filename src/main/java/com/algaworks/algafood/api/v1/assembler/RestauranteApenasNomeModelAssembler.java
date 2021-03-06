@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.algaworks.algafood.api.v1.controller.RestauranteController;
 import com.algaworks.algafood.api.v1.model.RestauranteApenasNomeModel;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 
 @Component
@@ -18,6 +19,9 @@ public class RestauranteApenasNomeModelAssembler
 
     @Autowired
     private ModelMapper modelMapper;
+    
+    @Autowired
+    private AlgaSecurity algaSecurity;  
     
     public RestauranteApenasNomeModelAssembler() {
         super(RestauranteController.class, RestauranteApenasNomeModel.class);
@@ -30,14 +34,21 @@ public class RestauranteApenasNomeModelAssembler
         
         modelMapper.map(restaurante, restauranteModel);
         
-        restauranteModel.add(linkToRestaurantes("restaurantes"));
+        if (algaSecurity.podeConsultarRestaurantes()) {
+            restauranteModel.add(linkToRestaurantes("restaurantes"));
+        }
         
         return restauranteModel;
     }
-    
+
     @Override
     public CollectionModel<RestauranteApenasNomeModel> toCollectionModel(Iterable<? extends Restaurante> entities) {
-        return super.toCollectionModel(entities)
-                .add(linkToRestaurantes());
+        CollectionModel<RestauranteApenasNomeModel> collectionModel = super.toCollectionModel(entities);
+        
+        if (algaSecurity.podeConsultarRestaurantes()) {
+            collectionModel.add(linkToRestaurantes());
+        }
+                
+        return collectionModel;
     }   
 }

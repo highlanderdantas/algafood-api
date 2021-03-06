@@ -15,8 +15,6 @@ import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,12 +22,12 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Usuario {
-	
+
+	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@EqualsAndHashCode.Include
 	private Long id;
-	
+
 	@Column(nullable = false)
 	private String nome;
 	
@@ -39,33 +37,25 @@ public class Usuario {
 	@Column(nullable = false)
 	private String senha;
 	
-	@JsonIgnore
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime dataCadastro;
 	
-	@JsonIgnore
 	@ManyToMany
-	@JoinTable(name = "usuario_grupo",
-			joinColumns = @JoinColumn(name = "usuario_id"),
+	@JoinTable(name = "usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"),
 			inverseJoinColumns = @JoinColumn(name = "grupo_id"))
 	private Set<Grupo> grupos = new HashSet<>();
 	
-	
-	public boolean senhaCoincideCom(String senha) {
-	    return getSenha().equals(senha);
-	}
-
-	public boolean senhaNaoCoincideCom(String senha) {
-	    return !senhaCoincideCom(senha);
-	}
-	
 	public boolean removerGrupo(Grupo grupo) {
-	    return getGrupos().remove(grupo);
+		return getGrupos().remove(grupo);
 	}
-
+	
 	public boolean adicionarGrupo(Grupo grupo) {
-	    return getGrupos().add(grupo);
+		return getGrupos().add(grupo);
 	}
-
+	
+	public boolean isNovo() {
+		return getId() == null;
+	}
+	
 }
